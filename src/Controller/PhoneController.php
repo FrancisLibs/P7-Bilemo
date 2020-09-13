@@ -19,7 +19,7 @@ class PhoneController extends AbstractController
      */
     public function show(Phone $phone, PhoneRepository $phoneRepository)
     {
-        return $this->json($phoneRepository->find($phone->getId()), 200, [], []);
+        return $this->json($phoneRepository->find($phone->getId()), 200, [], ['groups' => 'phone:show']);
     }
 
     /**
@@ -35,6 +35,6 @@ class PhoneController extends AbstractController
        
         $phones = $phoneRepository->findAllPhones($page, $_ENV['LIMIT']);
 
-        return $this->json($phones, 200, [], []);
+        return $this->json($phones, 200, [], ['groups' => ['phone:list']]);
     }
 }

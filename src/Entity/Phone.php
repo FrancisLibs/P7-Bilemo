@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\PhoneRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PhoneRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PhoneRepository::class)
@@ -14,26 +15,31 @@ class Phone
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"phone:list", "phone:show"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"phone:list", "phone:show"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"phone:list", "phone:show"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"phone:show"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"phone:show"})
      */
     private $description;
 
