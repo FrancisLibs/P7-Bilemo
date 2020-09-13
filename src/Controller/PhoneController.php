@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Phone;
 use App\Repository\PhoneRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,9 +15,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PhoneController extends AbstractController
 {
     /**
+     * @Route("/{id}", name="show_phone", methods={"GET"})
+     */
+    public function show(Phone $phone, PhoneRepository $phoneRepository)
+    {
+        return $this->json($phoneRepository->find($phone->getId()), 200, [], ['groups' => 'phone:show']);
+    }
+
+    /**
      * @Route("/{page<\d+>?1}", name="list_phones", methods={"GET"})
      */
-    public function index(Request $request, PhoneRepository $phoneRepository, SerializerInterface $serializer)
+    public function index(Request $request, PhoneRepository $phoneRepository)
     {
         $page = $request->query->get('page');
 
@@ -26,6 +35,6 @@ class PhoneController extends AbstractController
        
         $phones = $phoneRepository->findAllPhones($page, $_ENV['LIMIT']);
 
-        return $this->json($phones, 200, [], []);
+        return $this->json($phones, 200, [], ['groups' => ['phone:list']]);
     }
 }
