@@ -20,7 +20,7 @@ class Phone
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private $brand;
 
     /**
      * @ORM\Column(type="integer")
@@ -42,14 +42,14 @@ class Phone
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getBrand(): ?string
     {
-        return $this->name;
+        return $this->brand;
     }
 
-    public function setName(string $name): self
+    public function setBrand(string $brand): self
     {
-        $this->name = $name;
+        $this->brand = $brand;
 
         return $this;
     }
