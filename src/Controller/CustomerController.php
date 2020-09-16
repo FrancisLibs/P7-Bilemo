@@ -6,6 +6,7 @@ use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -45,8 +46,10 @@ class CustomerController extends AbstractController
     /**
      * @Route("customers/", name="add_customer", methods={"POST"})
      */
-    public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, Security $security)
     {
+        $user = $security->getUser();
+        dd($user);
         $json= $request->getContent();
 
         try{
@@ -59,6 +62,7 @@ class CustomerController extends AbstractController
             }
             
             $manager->persist($customer);
+            
             $manager->flush();
 
             return $this->json($customer, 201, [], ['groups' => 'customer:show']);
