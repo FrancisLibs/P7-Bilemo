@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CustomerRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
+ * @UniqueEntity("email", message="This email is not available")
  */
 class Customer
 {
@@ -21,24 +25,47 @@ class Customer
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="First name is required")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 255,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters",
+     * )
      * @Groups({"customer:list", "customer:show"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Name is required")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 255,
+     *      minMessage = "Your name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your name cannot be longer than {{ limit }} characters",
+     * )
      * @Groups({"customer:list", "customer:show"})
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Email is required")
+     * @Assert\Email(message = "The email is not a valid email.")
      * @Groups({"customer:list", "customer:show"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Company is required")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "Your company name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your company name cannot be longer than {{ limit }} characters"
+     * )
      * @Groups({"customer:list", "customer:show"})
      */
     private $company;

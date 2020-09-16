@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
@@ -44,12 +45,18 @@ class CustomerController extends AbstractController
     /**
      * @Route("customers/", name="add_customer", methods={"POST"})
      */
-    public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer)
+    public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, ValidatorInterface $validator)
     {
         $json= $request->getContent();
 
         try{
             $customer = $serializer->deserialize($json, Customer::class, 'json');
+
+            $errors = $validator->validate($customer);
+
+            if(count($errors) > 0){
+                return $this->json($errors, 400);
+            }
             
             $manager->persist($customer);
             $manager->flush();

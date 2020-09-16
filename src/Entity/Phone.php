@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PhoneRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -21,18 +22,22 @@ class Phone
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Brand is required")
      * @Groups({"phone:list", "phone:show"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="Price is required")
+     * @Assert\Type(type="numeric", message ="Price must be numeric")
      * @Groups({"phone:list", "phone:show"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Color is required")
      * @Groups({"phone:show"})
      */
     private $color;
