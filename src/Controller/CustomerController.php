@@ -69,4 +69,15 @@ class CustomerController extends AbstractController
             ], 400);
         }
     }
+
+    /**
+     * @Route("customers/{id}", name="delete_customer", methods={"DELETE"})
+     */
+    public function delete(Customer $customer, EntityManagerInterface $manager)
+    {
+        $manager->remove($customer);
+        $manager->flush();
+
+        return $this->json(null, 200);
+    }
 }
