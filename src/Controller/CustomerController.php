@@ -6,9 +6,11 @@ use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
@@ -44,14 +46,23 @@ class CustomerController extends AbstractController
     /**
      * @Route("customers/", name="add_customer", methods={"POST"})
      */
-    public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer)
+    public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, Security $security)
     {
+        $user = $security->getUser();
+        dd($user);
         $json= $request->getContent();
 
         try{
             $customer = $serializer->deserialize($json, Customer::class, 'json');
+
+            $errors = $validator->validate($customer);
+
+            if(count($errors) > 0){
+                return $this->json($errors, 400);
+            }
             
             $manager->persist($customer);
+            
             $manager->flush();
 
             return $this->json($customer, 201, [], ['groups' => 'customer:show']);
@@ -61,5 +72,16 @@ class CustomerController extends AbstractController
                 "message" => $e->getMessage()
             ], 400);
         }
+    }
+
+    /**
+     * @Route("customers/{id}", name="delete_customer", methods={"DELETE"})
+     */
+    public function delete(Customer $customer, EntityManagerInterface $manager)
+    {
+        $manager->remove($customer);
+        $manager->flush();
+
+        return $this->json(null, 200);
     }
 }
