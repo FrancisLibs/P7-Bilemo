@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
+
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CustomerRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -72,6 +73,8 @@ class Customer
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="customers")
+     * @Assert\NotBlank(message="User is required")
+     * @Groups({"customer:list", "customer:show"})
      */
     private $user;
 
