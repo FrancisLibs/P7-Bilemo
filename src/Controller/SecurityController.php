@@ -22,12 +22,14 @@ class SecurityController extends AbstractController
         ValidatorInterface $validator)
     {
         $data = json_decode($request->getContent());
-        if(isset($data->email, $data->password))
+        //dd($data);
+        if(isset($data->email) && isset($data->password) && isset($data->username))
         {
             $user = new User();
-            $user->setEmail($data->email);
-            $user->setPassword($encoder->encodePassword($user, $data->password));
-            $user->setRoles($user->getRoles());
+            $user->setEmail($data->email)
+                ->setPassword($encoder->encodePassword($user, $data->password))
+                ->setRoles($user->getRoles())
+                ->setUsername($data->username);
 
             $errors = $validator->validate($user);
 
@@ -45,20 +47,7 @@ class SecurityController extends AbstractController
         }
         return $this->json([
             "Status" => 500,
-            "message" => "The email and the password are required"
+            "message" => "The email, password and username are required"
         ], 500);
-    }
-
-    /**
-     * @Route("/login", name="login", methods={"POST"})
-     */
-    public function login(Request $request)
-    {
-        $user = $this->getUser();
-
-        return $this->json([
-            'username' => $user->getUsername(),
-            'roles' => $user->getRoles(),
-        ]);
     }
 }

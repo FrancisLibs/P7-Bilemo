@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Customer;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\Security\Core\Security;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -20,11 +21,25 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
-    public function findAllCustomers($page, $limit)
+    public function findCustomer($id, $user)
     {
         $query = $this->createQueryBuilder('c')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', $id)
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
-            ->setFirstResult(($page - 1) * $limit)
+            ->getSingleResult();
+        return $query;
+    }
+
+    public function findAllCustomers($page, $limit, $user)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->where('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $limit )
             ->setMaxResults($limit);
         return new Paginator($query);
     }
