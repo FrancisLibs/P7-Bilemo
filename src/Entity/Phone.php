@@ -38,7 +38,7 @@ class Phone
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Color is required")
-     * @Groups({"phone:show"})
+     * @Groups({"phone:list", "phone:show"})
      */
     private $color;
 

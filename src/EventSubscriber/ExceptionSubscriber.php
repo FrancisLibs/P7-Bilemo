@@ -24,7 +24,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         if ($exception instanceof HttpExceptionInterface) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => $exception->getMessage()
+                'message' => "Resource not found"
             ];
 
             $response = new JsonResponse($data);

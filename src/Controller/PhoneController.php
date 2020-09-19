@@ -10,22 +10,22 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @Route("/api/phones")
+ * @Route("/api/")
  */
 class PhoneController extends AbstractController
 {
     /**
-     * @Route("/{id}", name="show_phone", methods={"GET"})
+     * @Route("phones/{id}", name="show_phone", methods={"GET"})
      */
-    public function show(Phone $phone, PhoneRepository $phoneRepository)
+    public function show(Phone $phone, PhoneRepository $repository)
     {
-        return $this->json($phoneRepository->find($phone->getId()), 200, [], ['groups' => 'phone:show']);
+        return $this->json($repository->find($phone->getId()), 200, [], ['groups' => 'phone:show']);
     }
 
     /**
-     * @Route("/{page<\d+>?1}", name="list_phones", methods={"GET"})
+     * @Route("phones/{page<\d+>?1}", name="list_phones", methods={"GET"})
      */
-    public function index(Request $request, PhoneRepository $phoneRepository)
+    public function index(Request $request, PhoneRepository $repository)
     {
         $page = $request->query->get('page');
 
@@ -33,7 +33,7 @@ class PhoneController extends AbstractController
             $page = 1;
         }
        
-        $phones = $phoneRepository->findAllPhones($page, $_ENV['LIMIT']);
+        $phones = $repository->findAllPhones($page, $_ENV['LIMIT']);
 
         return $this->json($phones, 200, [], ['groups' => ['phone:list']]);
     }
