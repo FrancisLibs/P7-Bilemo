@@ -12,28 +12,45 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Security as SWGSecurity;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
- * @Route("/api/")
+ * @Route("/api", name ="customers")
  */
 class CustomerController extends AbstractController
 {
-    private $security;
     private $repository;
 
-    public function __construct(Security $security, CustomerRepository $repository)
+    public function __construct(CustomerRepository $repository)
     {
-        $this->security = $security;
         $this->repository = $repository;
     }
 
     /**
-     * @Route("customers/{id}", name="show_customer", methods={"GET"})
+     * @Route("/customers/{id}", name="show_customer", methods={"GET"})
+     * @SWG\Tag(name="Customers")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the informations of a customer",
+     *     @SWG\Schema(
+     *         type="array",
+     *         example={},
+     *         @SWG\Items(ref=@Model(type=Customer::class, groups={"customer:show"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Resource not found"
+     * )
+     * 
+     * @param Customer $customer
+     * @return Response
      */
     public function show(Customer $customer)
     {
-        $user = $this->security->getUser();
-
+        $user = $this->getUser();
         $customer = $this->repository->findCustomer($customer->getId(), $user);
 
         if (!$customer) {
@@ -47,11 +64,24 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("customers/{page<\d+>?1}", name="list_customer", methods={"GET"})
+     * @Route("/customers", name="list_customer", methods={"GET"})
+     * @Route("/customers/{page<\d+>?1}", name="list_customer_paginated", methods={"GET"})
+     * @SWG\Tag(name="Customers")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the list of customers",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Resource not found"
+     * )
+     * 
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request)
     {
-        $user = $this->security->getUser();
+        $user = $this->getUser();
 
         $page = $request->query->get('page');
 
@@ -73,11 +103,26 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("customers", name="add_customer", methods={"POST"})
+     * @Route("/customers", name="add_customer", methods={"POST"})
+     * @SWG\Tag(name="Customers")
+     * @SWG\Response(
+     *     response=201,
+     *     description="Add a new customer",
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad request"
+     * )
+     * 
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface $validator
+     * @return Response
      */
     public function new(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, ValidatorInterface $validator)
     {
-        $user = $this->security->getUser();
+        $user = $this->getUser();
     
         $json= $request->getContent();
 
@@ -105,20 +150,40 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("customers/{id}", name="delete_customer", methods={"DELETE"})
+     * @Route(":customers/{id}", name="delete_customer", methods={"DELETE"})
+     * @SWG\Tag(name="Customers")
+     * @SWG\Response(
+     *     response=204,
+     *     description="Delete an existing customer",
+     * )
+     * @SWG\Response(
+     *     response=500,
+     *     description="Access denied"
+     * )
+     * 
+     * @param Customer $customer
+     * @param EntityManagerInterface $manager
+     * @return Response
      */
     public function delete(Customer $customer, EntityManagerInterface $manager)
     {
-        $user = $this->security->getUser();
+        $user = $this->getUser();
 
         $customer = $this->repository->findCustomer($customer->getId(), $user);
+
+        if (!$customer) {
+            return $this->json([
+                "status" => 500,
+                "message" => "Access denied"
+            ], 404, [], []);
+        }
 
         $manager->remove($customer);
         $manager->flush();
 
         return $this->json([
-            "status"    => 200,
-            "message"   => "The client has been deleted"
+            "status"    => 204,
+            "message"   => "Customer succesfully deleted"
         ], 200);
     }
 }

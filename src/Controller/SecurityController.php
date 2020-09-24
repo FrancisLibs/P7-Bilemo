@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * @Route("/api")
@@ -17,19 +19,31 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/register", name="register", methods={"POST"})
+     * @SWG\Tag(name="Users")
+     * @SWG\Response(
+     *     response=201,
+     *     description="Register a user",
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Validation errors"
+     * )
+     * @SWG\Response(
+     *     response=500,
+     *     description="Email, password or username missing"
+     * )
      */
     public function register(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder,
         ValidatorInterface $validator)
     {
         $data = json_decode($request->getContent());
-        //dd($data);
-        if(isset($data->email) && isset($data->password) && isset($data->username))
+        if(isset($data->email, $data->password, $data->username))
         {
             $user = new User();
-            $user->setEmail($data->email)
-                ->setPassword($encoder->encodePassword($user, $data->password))
-                ->setRoles($user->getRoles())
-                ->setUsername($data->username);
+            $user->setEmail($data->email);
+            $user->setPassword($encoder->encodePassword($user, $data->password));
+            $user->setRoles($user->getRoles());
+            $user->setUsername($data->username);
 
             $errors = $validator->validate($user);
 
@@ -49,5 +63,22 @@ class SecurityController extends AbstractController
             "Status" => 500,
             "message" => "The email, password and username are required"
         ], 500);
+    }
+
+    /**
+     * @Route("/login_check", name="login_check", methods={"POST"})
+     * @SWG\Tag(name="Register and Log in")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Get authentication token",
+     *     @SWG\Schema(
+     *         type="array",
+     *         example={"username": "user1", "password": "pass"},
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     */
+    public function login_check()
+    {
     }
 }

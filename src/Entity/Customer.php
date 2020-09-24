@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\User;
-
+use Swagger\Annotations as SWG;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CustomerRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -21,6 +21,7 @@ class Customer
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({"customer:list", "customer:show"})
+     * @SWG\Property(description="The unique identifier of the customer.")
      */
     private $id;
 
@@ -34,6 +35,7 @@ class Customer
      *      maxMessage = "Your first name cannot be longer than {{ limit }} characters",
      * )
      * @Groups({"customer:list", "customer:show"})
+     * @SWG\Property(type="string", maxLength=255, minLength=3)
      */
     private $firstname;
 
@@ -47,6 +49,7 @@ class Customer
      *      maxMessage = "Your name cannot be longer than {{ limit }} characters",
      * )
      * @Groups({"customer:list", "customer:show"})
+     * @SWG\Property(type="string", maxLength=255, minLength=3)
      */
     private $lastname;
 
@@ -55,6 +58,7 @@ class Customer
      * @Assert\NotBlank(message="Email is required")
      * @Assert\Email(message = "The email is not a valid email.")
      * @Groups({"customer:list", "customer:show"})
+     * @SWG\Property(type="string", maxLength=255)
      */
     private $email;
 
@@ -68,6 +72,7 @@ class Customer
      *      maxMessage = "Your company name cannot be longer than {{ limit }} characters"
      * )
      * @Groups({"customer:list", "customer:show"})
+     * @SWG\Property(type="string", maxLength=255, minLength=2)
      */
     private $company;
 
