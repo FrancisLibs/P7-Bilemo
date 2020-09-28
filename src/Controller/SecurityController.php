@@ -9,8 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Swagger\Annotations as SWG;
-use Nelmio\ApiDocBundle\Annotation\Model;
+
 
 /**
  * @Route("/api")
@@ -19,19 +18,6 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/register", name="register", methods={"POST"})
-     * @SWG\Tag(name="Users")
-     * @SWG\Response(
-     *     response=201,
-     *     description="Register a user",
-     * )
-     * @SWG\Response(
-     *     response=400,
-     *     description="Validation errors"
-     * )
-     * @SWG\Response(
-     *     response=500,
-     *     description="Email, password or username missing"
-     * )
      */
     public function register(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder,
         ValidatorInterface $validator)
@@ -67,16 +53,6 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login_check", name="login_check", methods={"POST"})
-     * @SWG\Tag(name="Register and Log in")
-     * @SWG\Response(
-     *     response=200,
-     *     description="Get authentication token",
-     *     @SWG\Schema(
-     *         type="array",
-     *         example={"username": "user1", "password": "pass"},
-     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
-     *     )
-     * )
      */
     public function login_check()
     {

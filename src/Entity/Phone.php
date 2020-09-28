@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PhoneRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Swagger\Annotations as SWG;
 
 /**
  * @ORM\Entity(repositoryClass=PhoneRepository::class)
@@ -18,7 +17,6 @@ class Phone
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({"phone:list", "phone:show"})
-     * @SWG\Property(description="The unique identifier of the phone.")
      */
     private $id;
 
@@ -26,7 +24,6 @@ class Phone
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Brand is required")
      * @Groups({"phone:list", "phone:show"})
-     * @SWG\Property(type="string", maxLength=255)
      */
     private $brand;
 
@@ -35,7 +32,6 @@ class Phone
      * @Assert\NotBlank(message="Price is required")
      * @Assert\Type(type="numeric", message ="Price must be numeric")
      * @Groups({"phone:list", "phone:show"})
-     * @SWG\Property(type="integer")
      */
     private $price;
 
@@ -43,14 +39,12 @@ class Phone
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Color is required")
      * @Groups({"phone:list", "phone:show"})
-     * @SWG\Property(type="string", maxLength=255)
      */
     private $color;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"phone:show"})
-     * @SWG\Property(type="text")
      */
     private $description;
 

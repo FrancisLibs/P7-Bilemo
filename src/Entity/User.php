@@ -4,7 +4,6 @@ namespace App\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
-use Swagger\Annotations as SWG;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,7 +23,6 @@ class User implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({"customer:list", "customer:show"})
-     * @SWG\Property(description="The unique identifier of the user.")
      */
     private $id;
 
@@ -33,7 +31,6 @@ class User implements UserInterface
      * @Assert\NotBlank(message="Email is required")
      * @Assert\Email(message = "The email is not a valid email.")
      * @Groups({"customer:list", "customer:show"})
-     * @SWG\Property(type="string", maxLength=255)
      */
     private $email;
 
@@ -54,9 +51,8 @@ class User implements UserInterface
     private $customers;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"customer:list", "customer:show"})
-     * @SWG\Property(type="string", maxLength=255)
      * @Assert\NotBlank(message="Username is required")
      * @Assert\Length(
      *      min = 3,

@@ -26,21 +26,7 @@ class PhoneController extends AbstractController
 
     /**
      * @Route("/phones/{id}", name="show_phone", methods={"GET"})
-     * @SWG\Tag(name="Phone")
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns the informations of a phone",
-     *     @SWG\Schema(
-     *         type="array",
-     *         example={},
-     *         @SWG\Items(ref=@Model(type=Phone::class, groups={"phone:show"}))
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="Resource not found"
-     * )
-     * @param PhoneRepository $repository
+     * 
      * @return Response
      */
     public function show(Phone $phone)
@@ -60,17 +46,6 @@ class PhoneController extends AbstractController
     /**
      * @Route("/phones", name="list_phone", methods={"GET"})
      * @Route("/phones/{page<\d+>?1}", name="list_phones_paginated", methods={"GET"})
-     * @SWG\Tag(name="Phone")
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns the list of phones"
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="Resource not found"
-     * )
-     * @param Request $request
-     * @return Response
      */
     public function index(Request $request)
     {

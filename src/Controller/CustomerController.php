@@ -12,9 +12,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Swagger\Annotations as SWG;
-use Nelmio\ApiDocBundle\Annotation\Security as SWGSecurity;
-use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * @Route("/api", name ="customers")
@@ -30,20 +27,6 @@ class CustomerController extends AbstractController
 
     /**
      * @Route("/customers/{id}", name="show_customer", methods={"GET"})
-     * @SWG\Tag(name="Customers")
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns the informations of a customer",
-     *     @SWG\Schema(
-     *         type="array",
-     *         example={},
-     *         @SWG\Items(ref=@Model(type=Customer::class, groups={"customer:show"}))
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="Resource not found"
-     * )
      * 
      * @param Customer $customer
      * @return Response
@@ -66,16 +49,6 @@ class CustomerController extends AbstractController
     /**
      * @Route("/customers", name="list_customer", methods={"GET"})
      * @Route("/customers/{page<\d+>?1}", name="list_customer_paginated", methods={"GET"})
-     * @SWG\Tag(name="Customers")
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns the list of customers",
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="Resource not found"
-     * )
-     * 
      * @param Request $request
      * @return Response
      */
@@ -104,15 +77,6 @@ class CustomerController extends AbstractController
 
     /**
      * @Route("/customers", name="add_customer", methods={"POST"})
-     * @SWG\Tag(name="Customers")
-     * @SWG\Response(
-     *     response=201,
-     *     description="Add a new customer",
-     * )
-     * @SWG\Response(
-     *     response=400,
-     *     description="Bad request"
-     * )
      * 
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -151,15 +115,6 @@ class CustomerController extends AbstractController
 
     /**
      * @Route(":customers/{id}", name="delete_customer", methods={"DELETE"})
-     * @SWG\Tag(name="Customers")
-     * @SWG\Response(
-     *     response=204,
-     *     description="Delete an existing customer",
-     * )
-     * @SWG\Response(
-     *     response=500,
-     *     description="Access denied"
-     * )
      * 
      * @param Customer $customer
      * @param EntityManagerInterface $manager
